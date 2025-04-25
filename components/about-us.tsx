@@ -56,31 +56,34 @@ export default function AboutUs() {
         </motion.div>
 
         <div className="grid items-center gap-12 md:grid-cols-2">
-          <motion.div 
-            variants={itemVariants} 
-            className="relative h-[400px] overflow-hidden rounded-lg shadow-lg"
-            whileHover={{ scale: 1.02 }}
-            transition={{ duration: 0.3 }}
-          >
-            <Image
-              src="/Devxdis1.png?height=500&width=600"
-              alt="Our team"
-              fill
-              
-              className="object-cover"
-            />
-            <motion.div 
-              className="absolute inset-0 rounded-lg bg-gradient-to-r from-orange-500/20 to-transparent"
-              animate={{ 
-                background: [
-                  "linear-gradient(to right, rgba(249, 115, 22, 0.2), transparent)",
-                  "linear-gradient(to right, rgba(249, 115, 22, 0.3), transparent)",
-                  "linear-gradient(to right, rgba(249, 115, 22, 0.2), transparent)"
-                ]
-              }}
-              transition={{ duration: 3, repeat: Infinity }}
-            />
-          </motion.div>
+        <motion.div 
+  variants={itemVariants} 
+  className="relative h-[400px] overflow-hidden rounded-lg shadow-lg"
+  whileHover={{ scale: 1.02 }}
+  transition={{ duration: 0.3 }}
+>
+  {/* Image Component */}
+  <Image
+    src="/Devxdis1.png?height=600&width=600"
+    alt="Our team"
+    height={600} // Adjusted for consistency with the div height
+    width={600} // Set the width here
+    className="w-full h-full " // Make sure the image covers the whole div area
+  />
+
+  {/* Gradient Animation */}
+  <motion.div 
+    className="absolute inset-0 rounded-lg bg-gradient-to-r from-orange-500/20 to-transparent"
+    animate={{ 
+      background: [
+        "linear-gradient(to right, rgba(249, 115, 22, 0.2), transparent)",
+        "linear-gradient(to right, rgba(249, 115, 22, 0.3), transparent)",
+        "linear-gradient(to right, rgba(249, 115, 22, 0.2), transparent)"
+      ]
+    }}
+    transition={{ duration: 3, repeat: Infinity }}
+  />
+</motion.div>
 
           <motion.div variants={itemVariants} className="space-y-6">
             <h3 className="text-2xl font-bold">
