@@ -5,6 +5,13 @@ import { motion } from "framer-motion"
 import { useInView } from "react-intersection-observer"
 import { useForm } from "react-hook-form"
 import { MapPin, Phone, Mail, Clock, CheckCircle, AlertCircle } from "lucide-react"
+import { createClient } from "@supabase/supabase-js"
+
+// Initialize Supabase client
+const supabase = createClient(
+  "https://dkjkshqobqtaitnocwjm.supabase.co", // Replace with your Supabase project URL
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRramtzaHFvYnF0YWl0bm9jd2ptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU1NzYyNTUsImV4cCI6MjA2MTE1MjI1NX0.GIBQhDdTBy-AOb_hbflaSRrfY01PNWlPLtBmMFS8LiQ" // Replace with your Supabase public API key
+)
 
 type FormData = {
   name: string
@@ -34,8 +41,20 @@ export default function Contact() {
     setIsSubmitting(true)
 
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500))
+      // Insert form data into Supabase
+      const { error } = await supabase.from("contact_submissions").insert([
+        {
+          name: data.name,
+          email: data.email,
+          phone: data.phone,
+          subject: data.subject,
+          message: data.message,
+        },
+      ])
+
+      if (error) {
+        throw new Error(error.message)
+      }
 
       console.log("Form submitted:", data)
       setSubmitStatus("success")
@@ -281,7 +300,6 @@ export default function Contact() {
         </div>
 
         <motion.div variants={itemVariants} className="h-[400px] rounded-lg overflow-hidden shadow-lg">
-          {/* This would be replaced with an actual map component in a real implementation */}
           <div className="flex items-center justify-center w-full h-full bg-gray-200">
             <div className="text-center">
               <MapPin className="w-12 h-12 mx-auto mb-2 text-orange-500" />
