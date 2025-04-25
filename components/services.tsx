@@ -3,19 +3,20 @@
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { useInView } from "react-intersection-observer"
-import { Code, BarChart, Smartphone, Globe, Shield, Lightbulb, ChevronRight } from "lucide-react"
+import { Code, BarChart, Smartphone, Globe, Shield, Lightbulb, ChevronRight } from 'lucide-react'
 
 export default function Services() {
   const [ref, inView] = useInView({
-    triggerOnce: true,
+    triggerOnce: false,
     threshold: 0.1,
   })
 
   const [activeService, setActiveService] = useState<number | null>(null)
+  const [hoveredService, setHoveredService] = useState<number | null>(null)
 
   const services = [
     {
-      icon: <Code className="h-10 w-10 text-orange-500" />,
+      icon: <Code className="w-10 h-10 text-orange-500" />,
       title: "Web Development",
       shortDesc: "Custom websites and web applications",
       longDesc:
@@ -28,7 +29,7 @@ export default function Services() {
       ],
     },
     {
-      icon: <BarChart className="h-10 w-10 text-orange-500" />,
+      icon: <BarChart className="w-10 h-10 text-orange-500" />,
       title: "Digital Marketing",
       shortDesc: "Grow your online presence and reach",
       longDesc:
@@ -36,7 +37,7 @@ export default function Services() {
       features: ["SEO optimization", "Social media marketing", "Content strategy", "PPC advertising"],
     },
     {
-      icon: <Smartphone className="h-10 w-10 text-orange-500" />,
+      icon: <Smartphone className="w-10 h-10 text-orange-500" />,
       title: "Mobile App Development",
       shortDesc: "Native and cross-platform mobile apps",
       longDesc:
@@ -44,7 +45,7 @@ export default function Services() {
       features: ["Native iOS and Android apps", "Cross-platform development", "UI/UX design", "App store optimization"],
     },
     {
-      icon: <Globe className="h-10 w-10 text-orange-500" />,
+      icon: <Globe className="w-10 h-10 text-orange-500" />,
       title: "Cloud Solutions",
       shortDesc: "Scalable and secure cloud infrastructure",
       longDesc:
@@ -52,7 +53,7 @@ export default function Services() {
       features: ["Cloud migration", "Infrastructure as code", "Serverless architecture", "DevOps implementation"],
     },
     {
-      icon: <Shield className="h-10 w-10 text-orange-500" />,
+      icon: <Shield className="w-10 h-10 text-orange-500" />,
       title: "Cybersecurity",
       shortDesc: "Protect your business from threats",
       longDesc:
@@ -60,7 +61,7 @@ export default function Services() {
       features: ["Security assessments", "Penetration testing", "Compliance consulting", "Security awareness training"],
     },
     {
-      icon: <Lightbulb className="h-10 w-10 text-orange-500" />,
+      icon: <Lightbulb className="w-10 h-10 text-orange-500" />,
       title: "IT Consulting",
       shortDesc: "Strategic technology guidance",
       longDesc:
@@ -89,7 +90,7 @@ export default function Services() {
   }
 
   return (
-    <div className="container mx-auto px-4">
+    <div className="container px-4 mx-auto">
       <motion.div
         ref={ref}
         variants={containerVariants}
@@ -97,8 +98,8 @@ export default function Services() {
         animate={inView ? "visible" : "hidden"}
         className="space-y-12"
       >
-        <motion.div variants={itemVariants} className="text-center max-w-3xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
+        <motion.div variants={itemVariants} className="max-w-3xl mx-auto text-center">
+          <h2 className="mb-4 text-3xl font-bold md:text-4xl">
             Our <span className="text-orange-500">Services</span>
           </h2>
           <p className="text-gray-600">
@@ -107,27 +108,52 @@ export default function Services() {
           </p>
         </motion.div>
 
-        <motion.div variants={containerVariants} className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <motion.div variants={containerVariants} className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {services.map((service, index) => (
             <motion.div
               key={index}
               variants={itemVariants}
               className={`bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-all cursor-pointer border-2 ${
                 activeService === index ? "border-orange-500" : "border-transparent"
-              }`}
+              } relative overflow-hidden`}
               onClick={() => setActiveService(activeService === index ? null : index)}
+              onMouseEnter={() => setHoveredService(index)}
+              onMouseLeave={() => setHoveredService(null)}
               whileHover={{ y: -5 }}
             >
-              <div className="flex justify-between items-start">
+              {hoveredService === index && (
+                <motion.div 
+                  className="absolute inset-0 opacity-0 bg-orange-50"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 0.5 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                />
+              )}
+              
+              <div className="relative z-10 flex items-start justify-between">
                 <div className="flex items-center space-x-4">
-                  <div className="p-3 bg-orange-100 rounded-lg">{service.icon}</div>
+                  <motion.div 
+                    className="p-3 bg-orange-100 rounded-lg"
+                    whileHover={{ rotate: 5 }}
+                    animate={hoveredService === index ? { scale: [1, 1.1, 1] } : {}}
+                    transition={{ duration: 0.5 }}
+                  >
+                    {service.icon}
+                  </motion.div>
                   <div>
                     <h3 className="text-xl font-bold text-gray-800">{service.title}</h3>
-                    <p className="text-gray-600 text-sm">{service.shortDesc}</p>
+                    <p className="text-sm text-gray-600">{service.shortDesc}</p>
                   </div>
                 </div>
-                <motion.div animate={{ rotate: activeService === index ? 90 : 0 }} transition={{ duration: 0.3 }}>
-                  <ChevronRight className="h-5 w-5 text-orange-500" />
+                <motion.div 
+                  animate={{ 
+                    rotate: activeService === index ? 90 : 0,
+                    x: hoveredService === index && activeService !== index ? 5 : 0
+                  }} 
+                  transition={{ duration: 0.3 }}
+                >
+                  <ChevronRight className="w-5 h-5 text-orange-500" />
                 </motion.div>
               </div>
 
@@ -138,19 +164,29 @@ export default function Services() {
                     animate={{ opacity: 1, height: "auto" }}
                     exit={{ opacity: 0, height: 0 }}
                     transition={{ duration: 0.3 }}
-                    className="mt-4 pt-4 border-t border-gray-100"
+                    className="relative z-10 pt-4 mt-4 border-t border-gray-100"
                   >
-                    <p className="text-gray-600 mb-4">{service.longDesc}</p>
+                    <p className="mb-4 text-gray-600">{service.longDesc}</p>
                     <ul className="space-y-2">
                       {service.features.map((feature, i) => (
-                        <li key={i} className="flex items-center text-gray-700">
-                          <div className="w-1.5 h-1.5 bg-orange-500 rounded-full mr-2" />
+                        <motion.li 
+                          key={i} 
+                          className="flex items-center text-gray-700"
+                          initial={{ opacity: 0, x: -10 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: i * 0.1 }}
+                        >
+                          <motion.div 
+                            className="w-1.5 h-1.5 bg-orange-500 rounded-full mr-2"
+                            animate={{ scale: [1, 1.5, 1] }}
+                            transition={{ duration: 2, repeat: Infinity, repeatDelay: i }}
+                          />
                           {feature}
-                        </li>
+                        </motion.li>
                       ))}
                     </ul>
                     <motion.button
-                      className="mt-4 px-4 py-2 bg-orange-500 text-white rounded-md text-sm font-medium hover:bg-orange-600 transition-colors"
+                      className="relative px-4 py-2 mt-4 overflow-hidden text-sm font-medium text-white transition-colors bg-orange-500 rounded-md hover:bg-orange-600"
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={(e) => {
@@ -158,6 +194,11 @@ export default function Services() {
                         document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })
                       }}
                     >
+                      <motion.span 
+                        className="absolute inset-0 w-0 bg-white opacity-20"
+                        whileHover={{ width: "100%" }}
+                        transition={{ duration: 0.3 }}
+                      />
                       Learn More
                     </motion.button>
                   </motion.div>
@@ -169,23 +210,49 @@ export default function Services() {
 
         <motion.div
           variants={itemVariants}
-          className="bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl p-8 text-white text-center"
+          className="relative p-8 overflow-hidden text-center text-white bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl"
         >
-          <h3 className="text-2xl font-bold mb-4">Need a Custom Solution?</h3>
-          <p className="max-w-2xl mx-auto mb-6">
-            We understand that every business is unique. Contact us to discuss your specific requirements and how we can
-            tailor our services to meet your needs.
-          </p>
-          <motion.button
-            className="px-6 py-3 bg-white text-orange-500 font-medium rounded-md hover:bg-gray-100 transition-colors"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => {
-              document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })
+          <motion.div 
+            className="absolute w-40 h-40 bg-white rounded-full -top-20 -right-20 opacity-10"
+            animate={{ 
+              scale: [1, 1.5, 1],
+              x: [0, 10, 0],
+              y: [0, -10, 0]
             }}
-          >
-            Contact Us
-          </motion.button>
+            transition={{ duration: 8, repeat: Infinity }}
+          />
+          <motion.div 
+            className="absolute bg-white rounded-full -bottom-20 -left-20 w-60 h-60 opacity-10"
+            animate={{ 
+              scale: [1, 1.3, 1],
+              x: [0, -10, 0],
+              y: [0, 10, 0]
+            }}
+            transition={{ duration: 10, repeat: Infinity }}
+          />
+          
+          <div className="relative z-10">
+            <h3 className="mb-4 text-2xl font-bold">Need a Custom Solution?</h3>
+            <p className="max-w-2xl mx-auto mb-6">
+              We understand that every business is unique. Contact us to discuss your specific requirements and how we can
+              tailor our services to meet your needs.
+            </p>
+            <motion.button
+              className="relative px-6 py-3 overflow-hidden font-medium text-orange-500 transition-colors bg-white rounded-md hover:bg-gray-100"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => {
+                document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })
+              }}
+            >
+              <motion.span 
+                className="absolute inset-0 w-0 bg-orange-500 opacity-10"
+                whileHover={{ width: "100%" }}
+                transition={{ duration: 0.3 }}
+              />
+              Contact Us
+            </motion.button>
+          </div>
         </motion.div>
       </motion.div>
     </div>

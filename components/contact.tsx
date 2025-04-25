@@ -105,7 +105,7 @@ export default function Contact() {
     {
       icon: <Mail className="w-5 h-5 text-orange-500" />,
       title: "Email Address",
-      details: "info@infosite.com",
+      details: "info@Devxdiscovery.com",
     },
     {
       icon: <Clock className="w-5 h-5 text-orange-500" />,
